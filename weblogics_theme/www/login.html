@@ -9,7 +9,30 @@
 <link rel="stylesheet" href="/assets/weblogics_theme/css/custom_login.css">
 
 <div class="login-wrapper">
-    <!-- LEFT: LOGIN FORM -->
+    <!-- LEFT: BRANDING / IMAGE -->
+    <div class="login-right"
+         {% if settings.right_panel_image %}
+         style="background-image: url('{{ settings.right_panel_image }}'); background-size: cover; background-position: center;"
+         {% endif %}>
+        <div class="login-right-overlay"></div>
+        <div class="login-right-content">
+            <h1>{{ settings.right_panel_heading }}</h1>
+            <p>{{ settings.right_panel_subtext }}</p>
+
+            {% if settings.feature_row_1 %}
+            <div class="feature-row">
+                <div class="dot"></div> {{ settings.feature_row_1 }} — Done
+            </div>
+            {% endif %}
+            {% if settings.feature_row_2 %}
+            <div class="feature-row">
+                <div class="dot"></div> {{ settings.feature_row_2 }} — Done
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RIGHT: LOGIN FORM -->
     <div class="login-left">
 
         <div class="login-box">
@@ -48,29 +71,6 @@
             <div class="divider"><span>or</span></div>
 
             <a href="/login-with-email-link" class="btn-email-link">Login with Email Link</a>
-        </div>
-    </div>
-
-    <!-- RIGHT: BRANDING -->
-    <div class="login-right"
-         {% if settings.right_panel_image %}
-         style="background-image: url('{{ settings.right_panel_image }}'); background-size: cover; background-position: center;"
-         {% endif %}>
-        <div class="login-right-overlay"></div>
-        <div class="login-right-content">
-            <h1>{{ settings.right_panel_heading }}</h1>
-            <p>{{ settings.right_panel_subtext }}</p>
-
-            {% if settings.feature_row_1 %}
-            <div class="feature-row">
-                <div class="dot"></div> {{ settings.feature_row_1 }} — Done
-            </div>
-            {% endif %}
-            {% if settings.feature_row_2 %}
-            <div class="feature-row">
-                <div class="dot"></div> {{ settings.feature_row_2 }} — Done
-            </div>
-            {% endif %}
         </div>
     </div>
 </div>

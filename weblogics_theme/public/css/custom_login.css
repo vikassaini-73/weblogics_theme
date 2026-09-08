@@ -257,7 +257,39 @@ body {
 }
 
 /* ===== RESPONSIVE ===== */
+
+/* Tablet / small laptop: right panel hides, form takes full width */
 @media (max-width: 900px) {
     .login-right { display: none; }
     .login-left { width: 100%; }
+}
+
+/* Small phones: tighten padding & scale down type */
+@media (max-width: 480px) {
+    .login-left {
+        padding: 28px 20px;
+        align-items: center;
+    }
+    .login-box { width: 100%; }
+    .login-header-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    .login-logo-img { height: 48px; }
+    .login-box h2 { font-size: 19px; }
+    .form-control {
+        padding: 13px 16px 13px 40px;
+        font-size: 15px;
+    }
+    .btn-login, .btn-email-link {
+        padding: 13px;
+        font-size: 15px;
+    }
+}
+
+/* Extra-small screens: edge-to-edge form, no side padding */
+@media (max-width: 360px) {
+    .login-left { padding: 24px 16px; }
+    .toggle-pass { right: 16px; }
 }
