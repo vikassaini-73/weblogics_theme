@@ -113,8 +113,7 @@ weblogics_theme/
     ├── api/
     │   └── theme.py           # Whitelisted API: switch_theme, get_themes, extend_bootinfo
     ├── patches/
-    │   ├── add_wl_desk_theme_to_user.py   # Adds wl_desk_theme field to User DocType
-    │   └── rename_theme_fields_v2.py      # Field rename migration
+    │   └── add_wl_desk_theme_to_user.py   # Adds wl_desk_theme field to User DocType
     ├── public/
     │   ├── css/
     │   │   ├── theme_switcher.css         # Theme picker dialog styles
