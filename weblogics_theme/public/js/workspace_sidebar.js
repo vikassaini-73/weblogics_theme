@@ -165,7 +165,7 @@
 				"</div>" +
 				'<ul class="sub-menu">' +
 				'<li class="sub-parent" data-href="' + href + '">' +
-				'<a href="' + href + '" class="sidebar-label">' + escape_html(page.title) + "</a></li>" +
+				'<a href="' + href + '" class="sidebar-anchor">' + escape_html(page.title) + "</a></li>" +
 				children.map(submenu_item).join("") +
 				"</ul>" +
 				"</li>"
@@ -463,7 +463,9 @@
 
 		var items = editable ? [["edit", "Edit"], ["duplicate", "Duplicate"], ["hide", "Hide"]] : [["duplicate", "Duplicate"]];
 		if (editable) {
-			if (is_item_deletable(page)) items.push(["delete", "Delete"]);
+			/* Always offer Delete — server still guards permissions
+			   (public workspaces need Workspace Manager; private need owner). */
+			items.push(["delete", "Delete"]);
 		}
 
 		items.forEach(function (pair) {
@@ -509,14 +511,6 @@
 			});
 	}
 
-	function is_item_deletable(page) {
-		return (
-			!page.public ||
-			(page.public &&
-				(!page.module || (page.module && frappe.boot.developer_mode)))
-		);
-	}
-
 	/* ---------------- item actions ---------------- */
 
 	function handle_item_action(action, page) {
@@ -537,11 +531,52 @@
 	}
 
 	function edit_workspace_page(page) {
+		/* Match the default sidebar's "Update Details" dialog: Title, Parent
+		   (reparenting), Public — with Icon/Indicator-color swapping based on
+		   the Public toggle. Parent options come from the loaded sidebar pages. */
+		var top_pages = (pages || [])
+			.filter(function (p) {
+				return !(p.parent_page || "").trim() && p.title !== page.title;
+			})
+			.map(function (p) { return { title: p.title, public: !!p.public }; });
+		function parent_options(is_public) {
+			return [""].concat(
+				top_pages
+					.filter(function (p) { return p.public === is_public; })
+					.map(function (p) { return p.title; })
+			);
+		}
+
 		var dialog = new frappe.ui.Dialog({
 			title: "Edit " + page.title,
 			fields: [
 				{ fieldname: "title", label: "Title", fieldtype: "Data", reqd: 1, default: page.title },
-				{ fieldname: "icon", label: "Icon", fieldtype: "Icon", default: page.icon || "" },
+				{
+					fieldname: "parent",
+					label: "Parent Workspace",
+					fieldtype: "Select",
+					options: parent_options(!!page.public),
+					default: page.parent || "",
+				},
+				{
+					fieldname: "is_public",
+					label: "Public",
+					fieldtype: "Check",
+					default: page.public ? 1 : 0,
+					onchange: function () {
+						var is_pub = !!this.get_value();
+						dialog.set_df_property("parent", "options", parent_options(is_pub));
+						dialog.set_df_property("icon", "hidden", is_pub ? 0 : 1);
+						dialog.set_df_property("indicator_color", "hidden", is_pub ? 1 : 0);
+					},
+				},
+				{
+					fieldname: "icon",
+					label: "Icon",
+					fieldtype: "Icon",
+					default: page.icon || "",
+					hidden: page.public ? 0 : 1,
+				},
 				{
 					fieldname: "indicator_color",
 					label: "Indicator Color",
@@ -550,13 +585,8 @@
 						"", "green", "cyan", "blue", "orange", "yellow", "gray", "grey",
 						"red", "pink", "darkgrey", "purple", "light-blue",
 					],
-					default: "",
-				},
-				{
-					fieldname: "is_public",
-					label: "Public",
-					fieldtype: "Check",
-					default: page.public ? 1 : 0,
+					default: page.indicator_color || "",
+					hidden: page.public ? 1 : 0,
 				},
 			],
 			primary_action_label: "Save",
@@ -569,7 +599,7 @@
 						title: values.title,
 						icon: values.icon || "",
 						indicator_color: values.indicator_color || "",
-						parent: page.parent || "",
+						parent: values.parent || "",
 						public: values.is_public ? 1 : 0,
 					},
 					callback: function () {

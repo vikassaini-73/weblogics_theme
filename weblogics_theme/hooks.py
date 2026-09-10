@@ -29,13 +29,13 @@ after_migrate = ["weblogics_theme.install.after_migrate"]
 
 # include js, css files in header of desk.html
 app_include_css = [
-    "/assets/weblogics_theme/css/workspace_sidebar.css?v=20260910-3",
-    "/assets/weblogics_theme/css/theme_switcher.css?v=20260910-3",
+    "/assets/weblogics_theme/css/workspace_sidebar.css?v=20260910-5",
+    "/assets/weblogics_theme/css/theme_switcher.css?v=20260910-5",
 ]
 
 app_include_js = [
-    "/assets/weblogics_theme/js/workspace_sidebar.js?v=20260910-3",
-    "/assets/weblogics_theme/js/theme_switcher.js?v=20260910-3",
+    "/assets/weblogics_theme/js/workspace_sidebar.js?v=20260910-6",
+    "/assets/weblogics_theme/js/theme_switcher.js?v=20260910-5",
 ]
 
 # Inject wl_themes + wl_active_theme into frappe.boot on every desk load

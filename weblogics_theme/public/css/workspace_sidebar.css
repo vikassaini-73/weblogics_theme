@@ -33,11 +33,11 @@ body.workspace-sidebar.workspace-sidebar-closed .main-section {
     left: 0;
     bottom: 0;
     width: 224px;
-    height: 100vh;
+    height: 100vh !important;
     z-index: 1035;
     background: var(--sidebar-bg, var(--fg-color, #ffffff));
     color: var(--sidebar-text-muted, var(--text-muted, #475569));
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     overflow: hidden;
     transition: width 0.3s ease;
@@ -133,11 +133,12 @@ body.workspace-sidebar-closed #workspace-sidebar {
 }
 
 /* Top-level row */
+#workspace-sidebar .sidebar-anchor,
 #workspace-sidebar .nav-links > li > a,
 #workspace-sidebar .nav-toggle {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
     padding: 10px 12px;
     color: var(--sidebar-text-muted, var(--text-muted, #475569));
     text-decoration: none;
@@ -170,16 +171,21 @@ body.workspace-sidebar-closed #workspace-sidebar {
 
 /* Icons */
 #workspace-sidebar .sidebar-item-icon {
+    width: 18px !important;
+    height: 18px !important;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
-#workspace-sidebar .sidebar-item-icon .icon {
+#workspace-sidebar .sidebar-item-icon .icon,
+#workspace-sidebar .sidebar-item-icon svg {
     --icon-stroke: currentColor;
     color: currentColor;
     stroke: currentColor;
-    width: 18px;
-    height: 18px;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
 }
 
 /* Item label */
@@ -220,9 +226,10 @@ body.workspace-sidebar-closed #workspace-sidebar {
 }
 #workspace-sidebar li.show-menu > .sub-menu { display: block; }
 
-#workspace-sidebar .sub-menu li a {
-    display: flex;
-    align-items: center;
+#workspace-sidebar .sub-menu li a,
+#workspace-sidebar .sub-menu .sidebar-anchor {
+    display: flex !important;
+    align-items: center !important;
     gap: 10px;
     padding: 8px 14px 8px 38px;
     color: var(--sidebar-text-muted, var(--text-muted, #64748b));
@@ -247,6 +254,8 @@ body.workspace-sidebar-closed #workspace-sidebar {
 #workspace-sidebar .sub-menu li.sub-parent a {
     font-weight: 700;
     color: var(--sidebar-text, var(--text-color, #334155));
+    padding-left: 14px;
+    gap: 12px;
 }
 
 #workspace-sidebar .sidebar-item-wrap {

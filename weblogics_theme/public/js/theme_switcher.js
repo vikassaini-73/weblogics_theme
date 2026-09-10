@@ -821,17 +821,9 @@
             var btn = document.createElement("button");
             btn.className = "btn-reset dropdown-item wl-theme-switcher-btn";
             btn.type = "button";
-            btn.style.cssText =
-                "display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;" +
-                "padding:7px 16px;font-size:13px;color:var(--text-color,#111827);cursor:pointer;text-align:left;";
-            btn.innerHTML =
-                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
-                ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                '<circle cx="12" cy="12" r="10"/>' +
-                '<path d="M12 2a7 7 0 0 1 7 7c0 4-7 13-7 13S5 13 5 9a7 7 0 0 1 7-7z"/>' +
-                '</svg>Theme Switcher';
-            btn.addEventListener("mouseenter", function () { this.style.background = "var(--fg-hover-color,#f3f4f6)"; });
-            btn.addEventListener("mouseleave", function () { this.style.background = "none"; });
+            /* Match Frappe's native user-menu items exactly (navbar.html):
+               plain text label, no icon, no inline styles — native .dropdown-item styles apply. */
+            btn.textContent = "Theme Switcher";
             btn.addEventListener("click", function (e) {
                 e.preventDefault(); e.stopPropagation();
                 var dd = this.closest(".dropdown-menu");
@@ -857,6 +849,11 @@
         _initialized = true;
 
         var boot_theme = window.frappe && frappe.boot && frappe.boot.wl_active_theme;
+        var stored_theme = null;
+        try {
+            var stored_raw = localStorage.getItem(STORAGE_KEY);
+            if (stored_raw) stored_theme = JSON.parse(stored_raw);
+        } catch (e) { stored_theme = null; }
 
         // Populate _themes from boot first so fallback lookup works below
         if (window.frappe && frappe.boot && frappe.boot.wl_themes) {
@@ -867,6 +864,18 @@
             // Server told us which theme this user has selected — apply it
             wl_apply_theme(boot_theme);
             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(boot_theme)); } catch(e) {}
+        } else if (stored_theme && stored_theme.name) {
+            // Preserve the user's previously saved browser choice when boot info is stale/empty.
+            var stored_match = _themes.find(function (t) { return t.name === stored_theme.name; });
+            if (stored_match) {
+                wl_apply_theme(stored_match);
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stored_match)); } catch(e) {}
+                if (window.frappe && frappe.xcall) {
+                    frappe.xcall(API_SWITCH, { theme_name: stored_match.name }).catch(function () {});
+                }
+            } else {
+                wl_remove_theme();
+            }
         } else if (window.frappe && frappe.boot) {
             // No user-specific theme set yet (fresh install / new user).
             // Try to fall back to "Default Light" from the available themes list.
