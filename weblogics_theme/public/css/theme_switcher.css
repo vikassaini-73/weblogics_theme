@@ -1,0 +1,1107 @@
+/*
+ * Weblogics Theme — theme_switcher.css  (spec v2)
+ *
+ * Strategy:
+ *   JS injects <style id="wl-theme-vars"> on :root with all CSS variable overrides.
+ *   This file adds !important overrides for everything Frappe hardcodes at build time
+ *   (Bootstrap's .btn-primary, hardcoded SCSS vars compiled to hex, etc.) and
+ *   implements all style-field body classes.
+ *
+ *   Every selector was verified against Frappe's actual SCSS source files.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. GLOBAL BODY / PAGE
+   ═══════════════════════════════════════════════════════════════════ */
+
+body, html {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    font-family: var(--wl-font-family, var(--font-stack, inherit));
+}
+
+.page-container {
+    background-color: var(--bg-color) !important;
+}
+
+.page-head {
+    background: var(--bg-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. HEADINGS — --heading-color is now a derived darker shade of text
+   Frappe: h1-h6 { color: var(--heading-color) }
+   .head-title, .widget-title, .widget-group-title { color: var(--text-color) / var(--heading-color) }
+   ═══════════════════════════════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    color: var(--heading-color) !important;
+}
+
+.head-title,
+.widget-title,
+.widget-group-title,
+.page-title .title-text,
+.section-head,
+.column-label,
+.workspace-section-title,
+[data-page-route="Workspaces"] h3,
+[data-page-route="Workspaces"] h4 {
+    color: var(--wl-heading, var(--heading-color)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. FORM LABELS
+   Frappe: .control-label { color: var(--text-muted) }
+   ─ Already uses CSS var, injection handles it.
+   ─ Extra: force .label-area (checkbox labels) to use text-muted too.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.control-label,
+.grid-heading-row .col,
+.form-column .form-column-description,
+.form-section-description,
+.sidebar-label,
+.layout-side-section .sidebar-label,
+.frappe-timestamp,
+.help-box {
+    color: var(--text-muted) !important;
+}
+
+/* Checkbox label text */
+.label-area {
+    color: var(--text-color) !important;
+}
+
+/* Section heads (bold) */
+.section-head {
+    color: var(--text-color) !important;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. LAYOUT — main card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.layout-main-section,
+.layout-main-section.frappe-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. NAVBAR
+   Frappe: .navbar { background: var(--navbar-bg); border-bottom: 1px solid var(--border-color) }
+   ─ Both already use CSS vars but navbar text/icons need explicit override
+     because they inherit from body which may differ from navbar bg.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.navbar {
+    background: var(--navbar-bg) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+/* Navbar text — spec Step 5: explicit rule consuming --wl-navbar-text */
+.navbar,
+.navbar a,
+.navbar .nav-link,
+.navbar .navbar-nav .nav-link,
+.navbar .dropdown-toggle,
+.navbar .help-link,
+.navbar-expand .navbar-nav .nav-link {
+    color: var(--wl-navbar-text, var(--text-color)) !important;
+}
+
+/* Navbar icons */
+.navbar svg,
+.navbar .icon {
+    stroke: var(--wl-navbar-text, currentColor) !important;
+    --icon-stroke: var(--wl-navbar-text, var(--icon-stroke)) !important;
+}
+
+/* Search bar inside navbar */
+.navbar .search-bar input,
+.navbar .search-bar .form-control {
+    background-color: var(--awesomebar-focus-bg, var(--fg-color)) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+.navbar .search-bar input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+}
+
+/* The custom workspace sidebar owns the brand mark; keep the navbar focused. */
+.navbar .navbar-brand {
+    display: none !important;
+}
+
+.navbar .search-bar {
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--wl-navbar-text, #ffffff) 18%, transparent);
+    z-index: 1045;
+}
+
+.navbar .search-bar input {
+    min-height: 34px;
+}
+
+.navbar .search-bar .awesomplete ul {
+    z-index: 1050 !important;
+}
+
+.navbar .search-bar .awesomplete ul li a,
+.navbar .search-bar .awesomplete ul li a:visited {
+    display: block;
+    color: var(--text-color) !important;
+    text-decoration: none;
+}
+
+.navbar .search-bar .awesomplete ul li:hover,
+.navbar .search-bar .awesomplete ul li[aria-selected="true"] {
+    background-color: var(--fg-hover-color) !important;
+}
+
+.navbar .search-bar .awesomplete ul li mark {
+    color: var(--primary) !important;
+    background-color: transparent !important;
+    font-weight: 700;
+}
+
+.navbar .vertical-bar {
+    border-right-color: rgba(255,255,255,0.3) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. BREADCRUMB
+   Frappe: .breadcrumb { background-color: white } — HARDCODED
+   #navbar-breadcrumbs li.disabled a { color: var(--gray-600) } — hardcoded palette var
+   ─ spec Step 5: consume --wl-breadcrumb-disabled
+   ═══════════════════════════════════════════════════════════════════ */
+
+.breadcrumb {
+    background-color: var(--navbar-bg) !important;
+}
+
+.breadcrumb a,
+#navbar-breadcrumbs a,
+#navbar-breadcrumbs li a {
+    color: var(--wl-navbar-text, var(--text-color)) !important;
+    opacity: 0.85;
+}
+
+/* spec Step 5: disabled/current breadcrumb crumb */
+.breadcrumb .breadcrumb-item.disabled,
+.breadcrumb .breadcrumb-item:last-child,
+#navbar-breadcrumbs li.disabled a {
+    color: var(--wl-breadcrumb-disabled, var(--text-muted)) !important;
+    opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. INPUTS / FORM CONTROLS
+   Frappe: .form-control { background: var(--control-bg); color: var(--text-color) }
+   ─ Already CSS vars but border-color isn't always applied — force it.
+   ─ Also cover .input-with-feedback (Color picker, Link field etc.)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-control,
+input.form-control,
+input.input-with-feedback,
+textarea.form-control,
+select.form-control,
+.input-with-feedback,
+.frappe-control input:not([type="checkbox"]):not([type="radio"]),
+.frappe-control select,
+.frappe-control textarea,
+.frappe-control .control-input input,
+.frappe-control .control-input select,
+.frappe-control .control-input textarea,
+.page-form input.form-control,
+.page-form .input-with-feedback {
+    background-color: var(--control-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius, 6px) !important;
+}
+
+/* spec Step 5: focus ring consuming --wl-focus-ring */
+.form-control:focus,
+.input-with-feedback:focus,
+.frappe-control input:focus,
+.frappe-control select:focus,
+.frappe-control textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--wl-focus-ring, rgba(79,70,229,0.18)) !important;
+    outline: none !important;
+}
+
+.form-control::placeholder,
+.frappe-control input::placeholder,
+.frappe-control textarea::placeholder,
+.input-with-feedback::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+}
+
+/* Disabled / readonly */
+.form-control:disabled,
+.form-control[readonly],
+.like-disabled-input {
+    background-color: var(--input-disabled-bg, var(--control-bg)) !important;
+    color: var(--text-muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. BUTTONS
+   Bootstrap compiles .btn-primary at build time — must !important override.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn-primary,
+.btn.btn-primary,
+.page-actions .btn-primary,
+button.btn-primary {
+    background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    border-color:     var(--wl-btn-primary-bg, var(--primary)) !important;
+    color:            var(--wl-btn-primary-text, #ffffff) !important;
+}
+
+.btn-primary:hover,
+.btn.btn-primary:hover,
+.btn-primary:focus,
+.btn.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    border-color:     var(--wl-btn-primary-bg, var(--primary)) !important;
+    color:            var(--wl-btn-primary-text, #ffffff) !important;
+    filter: brightness(0.88);
+}
+
+/* Default / secondary */
+.btn-default,
+.btn.btn-default,
+.btn-secondary,
+.btn.btn-secondary {
+    background-color: var(--btn-default-bg) !important;
+    color:            var(--text-color) !important;
+    border-color:     var(--border-color) !important;
+}
+.btn-default:hover,
+.btn.btn-default:hover,
+.btn-secondary:hover,
+.btn.btn-secondary:hover {
+    background-color: var(--btn-default-hover-bg) !important;
+    color:            var(--text-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. DROPDOWN MENUS
+   Frappe: uses $dropdown-bg = var(--fg-color) and $dropdown-link-hover-bg = var(--fg-hover-color)
+   ─ Both already CSS vars, but explicit !important ensures theme wins.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dropdown-menu {
+    background-color: var(--fg-color) !important;
+    border-color:     var(--border-color) !important;
+}
+
+.dropdown-item,
+.dropdown-menu a {
+    color: var(--text-color) !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-menu a:hover {
+    background-color: var(--fg-hover-color) !important;
+    color: var(--text-color) !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    color:            var(--wl-btn-primary-text, #ffffff) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--border-color) !important;
+}
+
+.dropdown-header {
+    color: var(--text-muted) !important;
+}
+
+/* Awesomplete */
+.awesomplete ul {
+    background-color: var(--fg-color) !important;
+    border-color:     var(--border-color) !important;
+}
+.awesomplete ul li {
+    color: var(--text-color) !important;
+}
+.awesomplete ul li:hover,
+.awesomplete ul li[aria-selected="true"],
+.awesomplete ul .selected {
+    background-color: var(--awesomplete-hover-bg, var(--fg-hover-color)) !important;
+    color: var(--text-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. FORM TABS
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-tabs-list, .nav-tabs {
+    background-color: var(--card-bg) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.form-tabs .nav-link,
+.nav-tabs .nav-link {
+    color: var(--text-muted) !important;
+    background-color: transparent !important;
+}
+
+.form-tabs .nav-link.active,
+.nav-tabs .nav-link.active {
+    color: var(--text-color) !important;
+    border-bottom-color: var(--primary) !important;
+    background-color: transparent !important;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. LEFT SIDEBAR (form/list filter sidebar)
+   Frappe: .standard-sidebar-item:hover { background: var(--sidebar-select-color) }
+   .sidebar-label { color: var(--text-muted) }
+   ─ Already CSS vars; anchor color leakage fix is the key bug here.
+   ─ spec Step 5: .sidebar-menu a consumes --sidebar-text
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* spec Step 5: fix anchor leakage — sidebar labels show brand color */
+.sidebar-menu a,
+.standard-sidebar-item a,
+.list-sidebar .list-sidebar-button,
+.layout-side-section a:not(.btn) {
+    color: var(--sidebar-text, var(--text-color)) !important;
+}
+
+.sidebar-label,
+.layout-side-section .sidebar-label {
+    color: var(--text-muted) !important;
+}
+
+.standard-sidebar-item.selected,
+.standard-sidebar-item:hover {
+    background-color: var(--sidebar-select-color) !important;
+}
+
+/* Filter sidebar inputs */
+.list-sidebar input,
+.list-sidebar .form-control,
+.layout-side-section input:not([type="checkbox"]):not([type="radio"]),
+.layout-side-section .form-control {
+    background-color: var(--control-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Mobile overlay sidebar */
+.layout-side-section .overlay-sidebar {
+    background: var(--fg-color) !important;
+}
+
+.list-sidebar {
+    width: 100% !important;
+    min-width: 0;
+    padding: 12px !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.layout-side-section .list-sidebar .list-sidebar-button,
+.layout-side-section .list-sidebar .sidebar-action {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* Form document actions: keep Frappe's native actions, but give each one
+   a clear card-like target and a consistent icon/action alignment. */
+.form-sidebar,
+.form-sidebar.overlay-sidebar {
+    background: transparent !important;
+}
+
+.form-sidebar-items {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    margin: 4px 0 !important;
+    padding: 8px 10px !important;
+    color: var(--text-color) !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 9px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.form-sidebar-items > span:first-child,
+.form-sidebar-items > .add-assignment-label,
+.form-sidebar-items > .share-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--text-color) !important;
+}
+
+.form-sidebar-items svg {
+    flex: 0 0 auto;
+    color: var(--primary) !important;
+    stroke: var(--primary) !important;
+}
+
+.form-sidebar-items .pill-label,
+.form-sidebar-items .tags-label,
+.form-sidebar-items .ellipsis {
+    color: var(--text-color) !important;
+}
+
+.form-sidebar-items .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    flex: 0 0 28px;
+    margin-left: 8px;
+    padding: 0 !important;
+    color: var(--primary) !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 6px;
+}
+
+.form-sidebar-items:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg)) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    transform: translateX(2px);
+}
+
+.form-sidebar-items .icon-btn:hover,
+.form-sidebar-items .icon-btn:focus-visible {
+    color: var(--wl-btn-primary-text, #ffffff) !important;
+    background: var(--sidebar-active-bg, var(--primary)) !important;
+    border-color: transparent !important;
+}
+
+.list-sidebar .sidebar-section {
+    padding: 8px 4px;
+    margin-bottom: 12px !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list-sidebar .list-sidebar-button,
+.list-sidebar .sidebar-action {
+    border-radius: 8px;
+    padding: 8px 10px;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.list-sidebar .list-sidebar-button:hover,
+.list-sidebar .sidebar-action:hover {
+    background: var(--sidebar-select-color) !important;
+    color: var(--primary) !important;
+    text-decoration: none;
+}
+
+.list-sidebar .list-filters input:not([data-fieldtype="Check"]),
+.list-sidebar .filter-pill {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px;
+}
+
+.list-sidebar .filter-pill {
+    margin: 4px 0;
+    padding: 6px 8px;
+    background: var(--control-bg) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   12. LIST VIEW
+   Frappe:
+     .list-row:hover { background: var(--highlight-color) } ← CSS var ✓
+     .list-row-head  { background: var(--subtle-fg) }       ← CSS var ✓
+     .list-subject a { color: var(--text-color) }           ← CSS var ✓
+     .list-row-col a { color: var(--text-muted) }           ← CSS var ✓
+     .list-row-border { border: 1px solid $border-color }   ← HARDCODED SCSS ✗
+   ─ spec Step 5: .list-row .list-subject a consumes --wl-list-subject
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* spec Step 5: list subject link */
+.list-row .list-subject a,
+.list-subject a,
+.list-row-col.list-subject-col a {
+    color: var(--wl-list-subject, var(--primary)) !important;
+}
+.list-subject a:hover {
+    color: var(--primary) !important;
+    opacity: 0.85;
+}
+
+/* Other column links */
+.list-row-col a {
+    color: var(--text-muted) !important;
+}
+
+/* Timestamps */
+.list-row .frappe-timestamp,
+.list-row .modified {
+    color: var(--text-muted) !important;
+}
+
+/* Head row */
+.list-row-head {
+    background-color: var(--subtle-fg) !important;
+    color: var(--text-muted) !important;
+}
+.list-row-head .list-row-col a {
+    color: var(--text-muted) !important;
+}
+
+/* Row hover */
+.list-row:hover:not(.list-row-head) {
+    background-color: var(--highlight-color) !important;
+}
+.list-row-container:focus .list-row {
+    background-color: var(--highlight-color) !important;
+}
+
+/* Row border — HARDCODED $border-color in SCSS — must override */
+.list-row-border {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Checkbox accent */
+.list-row-checkbox, .list-check-all {
+    accent-color: var(--primary);
+}
+
+/* Group-by row */
+.list-group-by-field {
+    background-color: var(--subtle-fg) !important;
+    color: var(--text-muted) !important;
+}
+
+/* Filter bar */
+.page-form {
+    background-color: var(--card-bg) !important;
+    border-bottom-color: var(--border-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    padding: 8px !important;
+}
+.page-form .form-group,
+.page-form .filter-selector .btn-group,
+.page-form .sort-selector .btn-group {
+    margin: 4px !important;
+}
+
+.page-form .form-control,
+.page-form .filter-selector .btn,
+.page-form .sort-selector .btn {
+    min-height: 34px;
+    border-radius: 8px !important;
+}
+.page-form .filter-tag,
+.page-form .filter-label,
+.page-form .filter-selector .btn {
+    background-color: var(--control-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Paging */
+.list-paging-area, .footnote-area {
+    border-top-color: var(--border-color) !important;
+}
+.list-paging-area .btn-group {
+    border-color: var(--border-color) !important;
+}
+.list-paging-area .btn-paging {
+    background-color: var(--subtle-fg) !important;
+    color: var(--text-muted) !important;
+}
+.list-paging-area .btn-paging.btn-info {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   13. DATATABLE
+   .datatable sets --dt-* custom properties on itself.
+   These are now set by JS _build_vars. Extra: force .dt-cell color.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.datatable {
+    background-color: var(--bg-color) !important;
+    --dt-primary-color: var(--primary);
+    --dt-cell-bg: var(--fg-color);
+    --dt-border-color: var(--border-color);
+    --dt-header-cell-bg: var(--subtle-fg);
+    --dt-light-bg: var(--highlight-color);
+    --dt-text-color: var(--text-muted);
+}
+.datatable .dt-cell {
+    color: var(--text-color) !important;
+}
+.datatable .dt-row-header,
+.datatable .dt-cell--header,
+.datatable .dt-cell--header .dt-cell__content {
+    background-color: var(--subtle-fg) !important;
+    color: var(--text-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   14. WORKSPACE WIDGETS
+   .widget { background: var(--card-bg) }  ← CSS var ✓
+   ─ Shortcut hover: fill with primary color
+   ═══════════════════════════════════════════════════════════════════ */
+
+.widget { background-color: var(--card-bg) !important; }
+.widget.border { border-color: var(--border-color) !important; }
+.widget-title { color: var(--text-color) !important; }
+.widget-group-title { color: var(--text-color) !important; font-weight: 600; }
+
+.widget-group {
+    margin-bottom: 24px;
+}
+
+.widget.links-widget-box,
+.widget.shortcut-widget-box {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.widget.shortcut-widget-box {
+    min-height: 84px !important;
+    height: auto !important;
+    padding: 16px 18px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left;
+    border-left: 4px solid var(--primary) !important;
+}
+
+.widget.shortcut-widget-box .widget-title {
+    line-height: 1.35;
+    justify-content: flex-start !important;
+}
+
+.widget.shortcut-widget-box .indicator-pill {
+    margin-left: auto;
+}
+
+/* Five compact shortcut tiles fit on wide workspaces; other workspace cards
+   keep Frappe's normal three-column layout. */
+@media (min-width: 1200px) {
+    .ce-block.col-lg-3:has(.shortcut-widget-box) {
+        flex: 0 0 20% !important;
+        max-width: 20% !important;
+    }
+}
+
+.widget.links-widget-box:hover,
+.widget.shortcut-widget-box:hover {
+    border-color: var(--primary) !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+    transform: translateY(-2px);
+}
+
+.widget.links-widget-box .link-item {
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 2px 0;
+}
+
+.widget.links-widget-box .link-item:hover {
+    background: var(--sidebar-select-color) !important;
+    color: var(--primary) !important;
+}
+
+.widget.shortcut-widget-box:hover {
+    background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+}
+.widget.shortcut-widget-box:hover .widget-title {
+    color: var(--wl-btn-primary-text, #ffffff) !important;
+}
+.widget.shortcut-widget-box:hover svg,
+.widget.shortcut-widget-box:hover .icon {
+    --icon-stroke: var(--wl-btn-primary-text, #ffffff) !important;
+    stroke: var(--wl-btn-primary-text, #ffffff) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   15. MODALS
+   Bootstrap: .modal-content { background: var(--modal-bg) } ← CSS var ✓
+   ─ Force border and text too.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modal-content { background-color: var(--modal-bg) !important; border-color: var(--border-color) !important; }
+.modal-header  { background-color: var(--modal-bg) !important; border-bottom-color: var(--border-color) !important; }
+.modal-title   { color: var(--heading-color) !important; }
+.modal-footer  { background-color: var(--modal-bg) !important; border-top-color: var(--border-color) !important; }
+.modal-body    { background-color: var(--modal-bg) !important; color: var(--text-color) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   16. TABLES
+   ═══════════════════════════════════════════════════════════════════ */
+
+.table { color: var(--text-color) !important; }
+.table th, .table td { border-color: var(--border-color) !important; color: var(--text-color) !important; }
+.table thead th {
+    background-color: var(--subtle-fg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+.table-bordered { border-color: var(--border-color) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   17. POPOVER / TOOLTIP
+   ═══════════════════════════════════════════════════════════════════ */
+
+.popover { background-color: var(--popover-bg) !important; border-color: var(--border-color) !important; }
+.popover-body { color: var(--text-color) !important; }
+.popover-header { background-color: var(--subtle-fg) !important; color: var(--text-color) !important; border-bottom-color: var(--border-color) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   18. WORKSPACE SIDEBAR (our custom left sidebar)
+   ─ workspace_sidebar.css reads --sidebar-* vars injected by JS.
+   ─ Extra: explicit overrides for anchor leakage.
+   ═══════════════════════════════════════════════════════════════════ */
+
+#workspace-sidebar {
+    background: var(--sidebar-bg) !important;
+    border-right-color: var(--border-color) !important;
+}
+
+/* Active item */
+#workspace-sidebar .nav-links > li.active > a,
+#workspace-sidebar .nav-links > li.active > .nav-toggle > a {
+    background: var(--sidebar-active-bg) !important;
+    color: var(--sidebar-active-color) !important;
+    font-weight: 600;
+}
+#workspace-sidebar .nav-links > li.show-menu > .nav-toggle .nav-arrow {
+    color: var(--sidebar-active-color) !important;
+}
+
+/* All sidebar anchors use sidebar-text, not body text or brand */
+#workspace-sidebar a,
+#workspace-sidebar .sidebar-anchor {
+    color: var(--sidebar-text, var(--text-color)) !important;
+}
+
+/* Profile row */
+#workspace-sidebar .sidebar-logo { border-bottom-color: var(--border-color) !important; }
+#workspace-sidebar .sidebar-profile { border-top-color: var(--border-color) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   19. CHECKBOX / SWITCH
+   ═══════════════════════════════════════════════════════════════════ */
+
+input[type="checkbox"]:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+/* Preserve Frappe's semantic action colors while keeping them theme-aware. */
+.btn-danger { background-color: #dc2626 !important; border-color: #dc2626 !important; color: #ffffff !important; }
+.btn-success { background-color: #16a34a !important; border-color: #16a34a !important; color: #ffffff !important; }
+.btn-warning { background-color: #d97706 !important; border-color: #d97706 !important; color: #ffffff !important; }
+.indicator-pill { border-radius: 999px !important; font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   20. SCROLLBAR
+   ═══════════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color) !important;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   21. FONT FAMILY — var injected by JS _apply_font()
+   ═══════════════════════════════════════════════════════════════════ */
+
+body,
+.navbar,
+.sidebar-menu,
+.form-control,
+.frappe-control,
+#workspace-sidebar {
+    font-family: var(--wl-font-family, var(--font-stack, inherit));
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   22. BUTTON VISUAL STYLE — body class applied by JS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Flat Button (default — no extra styles needed) */
+.theme-btn-flat .btn-primary { border-radius: 6px !important; box-shadow: none !important; }
+
+/* Outline Button */
+.theme-btn-outline .btn-primary {
+    background-color: transparent !important;
+    color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    border: 2px solid var(--wl-btn-primary-bg, var(--primary)) !important;
+}
+.theme-btn-outline .btn-primary:hover {
+    background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    color: var(--wl-btn-primary-text, #fff) !important;
+    filter: none;
+}
+
+/* 3D Button */
+.theme-btn-3d .btn-primary {
+    border-radius: 6px !important;
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--wl-btn-primary-bg, var(--primary)) 70%, #000) !important;
+    transform: translateY(0);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.theme-btn-3d .btn-primary:active {
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--wl-btn-primary-bg, var(--primary)) 70%, #000) !important;
+    transform: translateY(2px);
+}
+
+/* Gradient Button */
+.theme-btn-gradient .btn-primary {
+    background: linear-gradient(135deg,
+        var(--wl-btn-primary-bg, var(--primary)) 0%,
+        var(--primary, #4f46e5) 100%) !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Pill Rounded Button */
+.theme-btn-pill .btn-primary,
+.theme-btn-pill .btn-default {
+    border-radius: 999px !important;
+}
+
+/* Minimal Border Button */
+.theme-btn-minimal .btn-primary {
+    background-color: transparent !important;
+    color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+}
+.theme-btn-minimal .btn-primary:hover {
+    background-color: var(--fg-hover-color) !important;
+    border-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+}
+
+/* Dashed Border Button */
+.theme-btn-dashed .btn-primary {
+    background-color: transparent !important;
+    color: var(--wl-btn-primary-bg, var(--primary)) !important;
+    border: 2px dashed var(--wl-btn-primary-bg, var(--primary)) !important;
+    box-shadow: none !important;
+}
+.theme-btn-dashed .btn-primary:hover {
+    background-color: var(--fg-hover-color) !important;
+    filter: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   23. FORM LAYOUT STYLE — body class applied by JS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Apple Clean UI — large radius, soft shadow */
+.theme-form-apple .std-form-layout > .form-layout > .form-page {
+    border-radius: 14px !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07) !important;
+    border-color: var(--border-color) !important;
+    overflow: hidden;
+}
+
+/* Keep the white form surface visibly rounded against the page background. */
+.layout-main-section:has(.std-form-layout),
+.std-form-layout > .form-layout > .form-page {
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+/* Keep long form tab labels usable on narrow desk viewports. */
+.form-tabs-list,
+.form-tabs .nav-tabs,
+.form-tabs .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+.form-tabs .nav-link,
+.form-tabs-list .nav-link {
+    white-space: normal;
+    line-height: 1.25;
+}
+
+@media (max-width: 767px) {
+    .form-tabs .nav-link,
+    .form-tabs-list .nav-link {
+        flex: 1 1 auto;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .page-form {
+        padding: 6px !important;
+    }
+}
+.theme-form-apple .form-section.card-section {
+    border-radius: 8px !important;
+}
+
+/* Light accent treatment: keep the card white while adding theme color to
+   section rhythm, field surfaces, and the form's visual hierarchy. */
+.theme-form-apple .form-section.card-section,
+.theme-form-apple .form-dashboard-section {
+    background: var(--card-bg) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.theme-form-apple .section-head {
+    color: var(--primary) !important;
+    border-left: 0;
+    padding-left: var(--padding-md) !important;
+}
+
+.theme-form-apple .form-control,
+.theme-form-apple .input-with-feedback,
+.theme-form-apple .control-input input,
+.theme-form-apple .control-input select,
+.theme-form-apple .control-input textarea {
+    background-color: var(--control-bg) !important;
+}
+
+/* Material UI — elevation shadow, sharper corners */
+.theme-form-material .std-form-layout > .form-layout > .form-page {
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08) !important;
+    border: none !important;
+}
+.theme-form-material .section-head {
+    font-size: 13px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px;
+    font-weight: 700 !important;
+    color: var(--primary) !important;
+}
+
+/* Frappe Neo — clean minimal, current default feel */
+.theme-form-neo .std-form-layout > .form-layout > .form-page {
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   24. LIST LAYOUT STYLE — body class applied by JS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Google Material UI look — taller rows, stronger divider */
+.theme-list-material .list-row {
+    height: 52px !important;
+    border-bottom: 1px solid var(--border-color);
+}
+.theme-list-material .list-row-border {
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important;
+    border-bottom-color: var(--border-color) !important;
+}
+.theme-list-material .list-subject a {
+    font-weight: 500;
+}
+
+/* Apple-style UI — compact rows, no divider, hover bg only */
+.theme-list-apple .list-row {
+    height: 40px !important;
+    border-radius: 8px !important;
+}
+.theme-list-apple .list-row-border {
+    display: none !important;
+}
+
+/* Card Material Theme — each row as a card */
+.theme-list-card .list-row-container {
+    padding: 0 4px !important;
+}
+.theme-list-card .list-row {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    margin-bottom: 6px !important;
+    height: auto !important;
+    min-height: 44px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 10px 15px !important;
+}
+.theme-list-card .list-row-border { display: none !important; }
+.theme-list-card .list-row:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10) !important;
+    transform: translateY(-1px);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   25. LANGUAGE SWITCHER
+   body.wl-lang-switcher-enabled shows the language widget
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Hide by default — shown only when enabled via body class */
+.navbar .language-switcher,
+.navbar .wl-lang-btn {
+    display: none !important;
+}
+body.wl-lang-switcher-enabled .navbar .language-switcher,
+body.wl-lang-switcher-enabled .navbar .wl-lang-btn {
+    display: inline-flex !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   26. THEME SWITCHER DIALOG (picker card styles)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+    .wl-theme-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+.wl-active {
+    box-shadow: 0 0 0 3px var(--primary, #4f46e5) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   27. DARK MODE — .dark-mode class (frappe-datatable token scope)
+   Frappe datatable scopes its own dark tokens under .dark-mode
+   This activates them when dark_mode_enabled=true
+   ═══════════════════════════════════════════════════════════════════ */
+
+html.dark-mode .datatable,
+.dark-mode .datatable {
+    color-scheme: dark;
+}

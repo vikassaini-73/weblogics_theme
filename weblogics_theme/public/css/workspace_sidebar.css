@@ -1,0 +1,521 @@
+/*
+ * Weblogics Theme — Workspace Sidebar
+ * Ported from Infintrix Theme sidebar implementation.
+ * All colour values use CSS custom properties with light-mode hex fallbacks
+ * so the sidebar renders correctly across light / dark / branded themes.
+ */
+
+/* ── Hide Frappe's default sidebar on workspace page only ──────── */
+/* Doctype / list / report pages keep their built-in filter sidebar. */
+body.workspace-sidebar.workspace-page .layout-side-section,
+body.workspace-sidebar.workspace-page #sidebar-default,
+body.workspace-sidebar.workspace-page .sidebar-menu-container {
+    display: none !important;
+}
+
+body.workspace-sidebar.workspace-page #page-Workspaces .sidebar-toggle-btn {
+    display: none;
+}
+
+/* ── Push main content right to make room for the fixed sidebar ── */
+body.workspace-sidebar .main-section {
+    margin-left: 224px;
+    transition: margin-left 0.3s ease;
+}
+body.workspace-sidebar.workspace-sidebar-closed .main-section {
+    margin-left: 84px;
+}
+
+/* ── Sidebar shell ─────────────────────────────────────────────── */
+#workspace-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 224px;
+    height: 100vh;
+    z-index: 1035;
+    background: var(--sidebar-bg, var(--fg-color, #ffffff));
+    color: var(--sidebar-text-muted, var(--text-muted, #475569));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    border-right: 1px solid var(--sidebar-border, var(--border-color, #e5e7eb));
+    box-shadow: 4px 0 20px rgba(15, 23, 42, 0.08);
+}
+
+#workspace-sidebar .sidebar-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-border, #cbd5e1) transparent;
+}
+#workspace-sidebar .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+#workspace-sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: var(--sidebar-border, #cbd5e1);
+    border-radius: 2px;
+}
+
+body.workspace-sidebar-closed #workspace-sidebar {
+    width: 84px;
+}
+
+/* Keep Doctype/List filters readable without letting the custom rail dominate. */
+@media (min-width: 992px) {
+    body.workspace-sidebar:not(.workspace-sidebar-closed) .main-section {
+        margin-left: 224px;
+    }
+
+    body.workspace-sidebar:not(.workspace-sidebar-closed) #workspace-sidebar {
+        width: 224px;
+    }
+
+    body.workspace-sidebar .layout-side-section {
+        flex: 0 0 220px;
+        max-width: 220px;
+    }
+
+    body.workspace-sidebar .layout-main-section-wrapper {
+        min-width: 0;
+    }
+}
+
+/* ── Logo / branding row ───────────────────────────────────────── */
+#workspace-sidebar .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 48px;
+    min-height: 48px;
+    padding: 8px 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+    background: var(--navbar-bg, var(--sidebar-bg, var(--fg-color, #ffffff)));
+    color: var(--wl-navbar-text, var(--sidebar-text, var(--text-color, #0f172a)));
+    border-bottom: 1px solid var(--sidebar-border, var(--border-color, #f1f5f9));
+    transition: background 0.2s ease;
+}
+#workspace-sidebar .sidebar-logo:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f8fafc));
+}
+#workspace-sidebar .sidebar-logo-img {
+     width: 30px;
+     height: 30px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 4px;
+}
+#workspace-sidebar .sidebar-title {
+    font-size: 16px;
+        font-size: 14px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+        color: var(--wl-navbar-text, var(--sidebar-text, var(--text-color, #0f172a)));
+}
+
+/* ── Navigation list ──────────────────────────────────────────── */
+#workspace-sidebar .nav-links {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0 0 12px;
+}
+#workspace-sidebar .nav-links > li {
+    position: relative;
+    margin: 2px 8px;
+}
+
+/* Top-level row */
+#workspace-sidebar .nav-links > li > a,
+#workspace-sidebar .nav-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    color: var(--sidebar-text-muted, var(--text-muted, #475569));
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.2s ease, color 0.2s ease;
+    position: relative;
+}
+#workspace-sidebar .nav-toggle { padding: 0; }
+#workspace-sidebar .nav-toggle > a { flex: 1; }
+
+#workspace-sidebar .nav-links > li:hover > a,
+#workspace-sidebar .nav-links > li:hover > .nav-toggle > a {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f9fafb));
+    color: var(--sidebar-text, var(--text-color, #111827));
+}
+
+#workspace-sidebar .nav-links > li > a:focus-visible,
+#workspace-sidebar .nav-toggle > a:focus-visible {
+    outline: 2px solid var(--sidebar-active-color, var(--primary));
+    outline-offset: 2px;
+}
+
+/* Active row */
+#workspace-sidebar .nav-links > li.active > a,
+#workspace-sidebar .nav-links > li.active > .nav-toggle > a {
+    background: var(--sidebar-active-bg, #f0fdf4);
+    color: var(--sidebar-active-color, var(--brand-color, #10b981));
+    font-weight: 600;
+}
+
+/* Icons */
+#workspace-sidebar .sidebar-item-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+#workspace-sidebar .sidebar-item-icon .icon {
+    --icon-stroke: currentColor;
+    color: currentColor;
+    stroke: currentColor;
+    width: 18px;
+    height: 18px;
+}
+
+/* Item label */
+#workspace-sidebar .sidebar-label {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+/* Module collapse arrow */
+#workspace-sidebar .nav-arrow {
+    color: var(--sidebar-text-muted, #94a3b8);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 10px 10px 10px 6px;
+    transition: transform 0.3s ease, color 0.2s ease;
+    flex-shrink: 0;
+}
+#workspace-sidebar .nav-arrow:hover {
+    color: var(--sidebar-text, var(--text-color, #475569));
+}
+#workspace-sidebar li.show-menu > .nav-toggle .nav-arrow {
+    transform: rotate(180deg);
+    color: var(--sidebar-active-color, var(--brand-color, #10b981));
+}
+
+/* Sub-menu */
+#workspace-sidebar .sub-menu {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 2px 0 8px;
+    background: var(--sidebar-hover-bg, var(--control-bg, #f8fafc));
+    border-radius: 0 0 8px 8px;
+}
+#workspace-sidebar li.show-menu > .sub-menu { display: block; }
+
+#workspace-sidebar .sub-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 38px;
+    color: var(--sidebar-text-muted, var(--text-muted, #64748b));
+    font-size: 13px;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 6px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+#workspace-sidebar .sub-menu li a:hover {
+    color: var(--sidebar-text, var(--text-color, #111827));
+    background: var(--sidebar-hover-bg, var(--control-bg, #f9fafb));
+}
+#workspace-sidebar .sub-menu li.active > div > a,
+#workspace-sidebar .sub-menu li.active > div > a:hover {
+    background: var(--sidebar-active-bg, #f0fdf4);
+    color: var(--sidebar-active-color, var(--brand-color, #10b981));
+    font-weight: 600;
+}
+
+/* Parent label at top of sub-menu */
+#workspace-sidebar .sub-menu li.sub-parent a {
+    font-weight: 700;
+    color: var(--sidebar-text, var(--text-color, #334155));
+}
+
+#workspace-sidebar .sidebar-item-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#workspace-sidebar .sub-menu .sidebar-item-icon .icon {
+    color: currentColor;
+    stroke: currentColor;
+    width: 14px;
+    height: 14px;
+}
+
+/* Empty sub-menu (leaf items — drives collapsed fly-out) */
+#workspace-sidebar .sub-menu.blank { display: none; }
+
+/* ── User profile (bottom) ────────────────────────────────────── */
+.sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--sidebar-border, var(--border-color, #f1f5f9));
+    background: var(--sidebar-bg, var(--fg-color, #ffffff));
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.sidebar-profile:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f8fafc));
+}
+.sidebar-profile .avatar,
+.sidebar-profile .sidebar-profile-avatar {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+.sidebar-profile .avatar-frame,
+.sidebar-profile .sidebar-profile-avatar {
+    background: linear-gradient(135deg, var(--sidebar-active-color, var(--primary)), var(--primary));
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.sidebar-profile-info {
+    flex: 1;
+    min-width: 0;
+}
+.sidebar-profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sidebar-text, var(--text-color, #0f172a));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sidebar-profile-role {
+    font-size: 11px;
+    color: var(--sidebar-text-muted, var(--text-muted, #94a3b8));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Collapsed state ──────────────────────────────────────────── */
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-logo {
+    justify-content: center;
+    height: 48px;
+    min-height: 48px;
+    padding: 8px 0;
+}
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-title,
+body.workspace-sidebar-closed #workspace-sidebar .nav-arrow,
+body.workspace-sidebar-closed #workspace-sidebar .sub-menu,
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-label {
+    display: none;
+}
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li {
+    margin: 2px 10px;
+}
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li > a,
+body.workspace-sidebar-closed #workspace-sidebar .nav-toggle > a {
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 0;
+}
+
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li > a:hover,
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li.active > a {
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--sidebar-active-color, var(--primary)) 16%, transparent);
+}
+
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-item-icon {
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li.active .sidebar-item-icon {
+    background: var(--sidebar-active-bg, color-mix(in srgb, var(--primary) 12%, transparent));
+}
+body.workspace-sidebar-closed #workspace-sidebar .nav-toggle { padding: 0; }
+
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-profile {
+    justify-content: center;
+    padding: 14px 0;
+}
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-profile-name,
+body.workspace-sidebar-closed #workspace-sidebar .sidebar-profile-role {
+    display: none;
+}
+
+/* ── Fly-out sub-menu while collapsed ─────────────────────────── */
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li:hover > .sub-menu {
+    display: block !important;
+    position: fixed;
+    left: 84px;
+    z-index: 1040;
+    min-width: 220px;
+    padding: 8px 0;
+    background: var(--sidebar-bg, var(--fg-color, #ffffff));
+    border-radius: 0 10px 10px 0;
+    box-shadow: 4px 8px 24px rgba(15, 23, 42, 0.14);
+    border: 1px solid var(--sidebar-border, var(--border-color, #e2e8f0));
+}
+
+/* Leaf items have an intentionally empty submenu; never show its shell on hover. */
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li:hover > .sub-menu.blank {
+    display: none !important;
+}
+
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li:hover > .sub-menu:not(.blank) {
+    display: block !important;
+}
+body.workspace-sidebar-closed #workspace-sidebar .sub-menu li a {
+    padding: 9px 16px 9px 14px;
+}
+body.workspace-sidebar-closed #workspace-sidebar .nav-links > li:hover {
+    background: transparent;
+}
+
+/* ── Edit-mode item actions ───────────────────────────────────── */
+.sidebar-item-actions {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    margin-top: -11px;
+    display: none;
+    align-items: center;
+    gap: 2px;
+}
+body.workspace-sidebar .workspace-editing .sidebar-item-actions {
+    display: flex;
+}
+
+.sidebar-item-actions .sidebar-item-drag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    color: var(--sidebar-text-muted, #94a3b8);
+    cursor: grab;
+    transition: background 0.15s, color 0.15s;
+}
+.sidebar-item-actions .sidebar-item-drag:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f1f5f9));
+    color: var(--sidebar-text, var(--text-color, #475569));
+}
+.sidebar-item-actions .sidebar-item-drag:active { cursor: grabbing; }
+
+.sidebar-item-actions .sidebar-item-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    color: var(--sidebar-text-muted, #94a3b8);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.sidebar-item-actions .sidebar-item-menu-btn:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f1f5f9));
+    color: var(--sidebar-text, var(--text-color, #475569));
+}
+
+/* ── Item action dropdown menu ────────────────────────────────── */
+.sidebar-item-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    min-width: 150px;
+    background: var(--sidebar-bg, var(--fg-color, #ffffff));
+    border: 1px solid var(--sidebar-border, var(--border-color, #e2e8f0));
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+    z-index: 1000;
+    padding: 5px 0;
+    overflow: hidden;
+}
+.sidebar-item-menu.hidden { display: none; }
+
+.sidebar-item-menu-item {
+    padding: 8px 14px;
+    font-size: 12.5px;
+    color: var(--sidebar-text, var(--text-color, #334155));
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.sidebar-item-menu-item:hover {
+    background: var(--sidebar-hover-bg, var(--control-bg, #f1f5f9));
+    color: var(--sidebar-text, var(--text-color, #0f172a));
+}
+.sidebar-item-menu-item.sidebar-danger { color: #e11d48; }
+.sidebar-item-menu-item.sidebar-danger:hover {
+    background: #fff1f2;
+    color: #be123c;
+}
+
+/* ── Sortable drag-drop feedback ──────────────────────────────── */
+.is-sort-ghost {
+    opacity: 0.4;
+    background: var(--sidebar-active-bg, #f0fdf4) !important;
+    border-radius: 8px;
+}
+.is-sort-chosen {
+    background: var(--sidebar-active-bg, #f0fdf4) !important;
+    border-radius: 8px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 991px) {
+    body.workspace-sidebar.workspace-sidebar-closed .main-section {
+        margin-left: 84px;
+    }
+}
+
+@media (max-width: 767px) {
+    #workspace-sidebar,
+    body.workspace-sidebar #workspace-sidebar {
+        width: 84px;
+    }
+    body.workspace-sidebar .main-section {
+        margin-left: 84px;
+    }
+    #workspace-sidebar .sidebar-logo {
+        justify-content: center;
+        padding: 16px 0;
+    }
+    #workspace-sidebar .sidebar-title,
+    #workspace-sidebar .sidebar-label,
+    #workspace-sidebar .nav-arrow,
+    #workspace-sidebar .sidebar-profile-name,
+    #workspace-sidebar .sidebar-profile-role {
+        display: none;
+    }
+    #workspace-sidebar .nav-links > li > a,
+    #workspace-sidebar .nav-toggle > a {
+        justify-content: center;
+        padding: 12px 0;
+    }
+}

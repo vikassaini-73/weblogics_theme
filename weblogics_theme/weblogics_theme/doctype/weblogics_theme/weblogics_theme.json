@@ -1,0 +1,371 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:theme_name",
+ "creation": "2026-09-09 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "theme_name",
+  "column_break_top",
+  "dark_mode_enabled",
+
+  "section_colors",
+  "brand_primary_color",
+  "column_break_c1",
+  "page_background_color",
+
+  "card_background_color",
+  "column_break_c2",
+  "border_color",
+
+  "body_text_color",
+  "column_break_c3",
+  "muted_text_color",
+
+  "section_inputs",
+  "input_background_color",
+  "column_break_i1",
+  "list_row_hover_color",
+
+  "section_header",
+  "navbar_background_color",
+  "column_break_h1",
+  "navbar_text_color",
+
+  "column_break_h2",
+  "breadcrumb_disabled_text_color",
+
+  "section_buttons",
+  "button_primary_background_color",
+  "column_break_b1",
+  "button_primary_text_color",
+
+  "section_sidebar",
+  "sidebar_background_color",
+  "column_break_s1",
+  "sidebar_active_accent_color",
+
+  "sidebar_hover_background_color",
+  "column_break_s2",
+  "sidebar_text_color",
+
+  "section_list",
+  "list_link_color",
+  "column_break_l1",
+  "list_header_background_color",
+
+  "section_styles",
+  "form_layout_style",
+  "column_break_st1",
+  "app_font_family",
+
+  "list_layout_style",
+  "column_break_st2",
+  "button_visual_style",
+
+  "section_advanced",
+  "auto_dark_mode",
+  "column_break_adv",
+  "enable_language_switcher"
+ ],
+ "fields": [
+  {
+   "fieldname": "theme_name",
+   "fieldtype": "Data",
+   "label": "Theme Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dark_mode_enabled",
+   "fieldtype": "Check",
+   "label": "Dark Theme",
+   "default": "0"
+  },
+
+  {
+   "fieldname": "section_colors",
+   "fieldtype": "Section Break",
+   "label": "Brand Colors"
+  },
+  {
+   "fieldname": "brand_primary_color",
+   "fieldtype": "Color",
+   "label": "Brand Primary Color",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_c1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "page_background_color",
+   "fieldtype": "Color",
+   "label": "Page Background Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "card_background_color",
+   "fieldtype": "Color",
+   "label": "Card / Surface Background Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_c2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "border_color",
+   "fieldtype": "Color",
+   "label": "Border Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "body_text_color",
+   "fieldtype": "Color",
+   "label": "Body Text Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_c3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "muted_text_color",
+   "fieldtype": "Color",
+   "label": "Muted / Secondary Text Color",
+   "reqd": 1
+  },
+
+  {
+   "fieldname": "section_inputs",
+   "fieldtype": "Section Break",
+   "label": "Inputs & Hover"
+  },
+  {
+   "fieldname": "input_background_color",
+   "fieldtype": "Color",
+   "label": "Input Background Color"
+  },
+  {
+   "fieldname": "column_break_i1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "list_row_hover_color",
+   "fieldtype": "Color",
+   "label": "List Row Hover Color"
+  },
+
+  {
+   "fieldname": "section_header",
+   "fieldtype": "Section Break",
+   "label": "Header / Navbar"
+  },
+  {
+   "fieldname": "navbar_background_color",
+   "fieldtype": "Color",
+   "label": "Navbar Background Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_h1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "navbar_text_color",
+   "fieldtype": "Color",
+   "label": "Navbar Text Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_h2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "breadcrumb_disabled_text_color",
+   "fieldtype": "Color",
+   "label": "Breadcrumb Disabled Text Color"
+  },
+
+  {
+   "fieldname": "section_buttons",
+   "fieldtype": "Section Break",
+   "label": "Buttons"
+  },
+  {
+   "fieldname": "button_primary_background_color",
+   "fieldtype": "Color",
+   "label": "Primary Button Background",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_b1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "button_primary_text_color",
+   "fieldtype": "Color",
+   "label": "Primary Button Text",
+   "reqd": 1
+  },
+
+  {
+   "fieldname": "section_sidebar",
+   "fieldtype": "Section Break",
+   "label": "Sidebar"
+  },
+  {
+   "fieldname": "sidebar_background_color",
+   "fieldtype": "Color",
+   "label": "Sidebar Background Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_s1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sidebar_active_accent_color",
+   "fieldtype": "Color",
+   "label": "Sidebar Active Item Accent",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sidebar_hover_background_color",
+   "fieldtype": "Color",
+   "label": "Sidebar Hover Background",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_s2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sidebar_text_color",
+   "fieldtype": "Color",
+   "label": "Sidebar Text Color",
+   "reqd": 1
+  },
+
+  {
+   "fieldname": "section_list",
+   "fieldtype": "Section Break",
+   "label": "List View"
+  },
+  {
+   "fieldname": "list_link_color",
+   "fieldtype": "Color",
+   "label": "List Row Link Color",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_l1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "list_header_background_color",
+   "fieldtype": "Color",
+   "label": "List Header Row Background",
+   "reqd": 1
+  },
+
+  {
+   "fieldname": "section_styles",
+   "fieldtype": "Section Break",
+   "label": "Styles"
+  },
+  {
+   "fieldname": "form_layout_style",
+   "fieldtype": "Select",
+   "label": "Form Layout Style",
+   "options": "\nAPPLE CLEAN UI\nMATERIAL UI\nFRAPPE NEO"
+  },
+  {
+   "fieldname": "column_break_st1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "app_font_family",
+   "fieldtype": "Select",
+   "label": "Application Font",
+   "options": "\nInter\nRoboto\nPoppins\nLato\nOpen Sans\nNunito\nDM Sans"
+  },
+  {
+   "fieldname": "list_layout_style",
+   "fieldtype": "Select",
+   "label": "List Layout Style",
+   "options": "\nGoogle Material UI look\nApple-style UI\nCard Material Theme"
+  },
+  {
+   "fieldname": "column_break_st2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "button_visual_style",
+   "fieldtype": "Select",
+   "label": "Button Visual Style",
+   "options": "\nFlat Button\nOutline Button\n3D Button\nGradient Button\nPill Rounded Button\nMinimal Border Button\nDashed Border Button"
+  },
+
+  {
+   "fieldname": "section_advanced",
+   "fieldtype": "Section Break",
+   "label": "Advanced"
+  },
+  {
+   "fieldname": "auto_dark_mode",
+   "fieldtype": "Check",
+   "label": "Auto-Switch With System Theme",
+   "default": "0"
+  },
+  {
+   "fieldname": "column_break_adv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enable_language_switcher",
+   "fieldtype": "Check",
+   "label": "Enable Language Switcher",
+   "default": "0"
+  }
+ ],
+ "links": [],
+ "modified": "2026-09-10 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Weblogics Theme",
+ "name": "Weblogics Theme",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "All"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}
