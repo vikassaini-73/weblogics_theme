@@ -5,6 +5,9 @@ app_description = "login ui"
 app_email = "vikas@gmail.com"
 app_license = "mit"
 
+# Seed default themes after every migrate
+after_migrate = ["weblogics_theme.install.after_migrate"]
+
 # Apps
 # ------------------
 
@@ -25,8 +28,18 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/weblogics_theme/css/weblogics_theme.css"
-# app_include_js = "/assets/weblogics_theme/js/weblogics_theme.js"
+app_include_css = [
+    "/assets/weblogics_theme/css/workspace_sidebar.css?v=20260910-3",
+    "/assets/weblogics_theme/css/theme_switcher.css?v=20260910-3",
+]
+
+app_include_js = [
+    "/assets/weblogics_theme/js/workspace_sidebar.js?v=20260910-3",
+    "/assets/weblogics_theme/js/theme_switcher.js?v=20260910-3",
+]
+
+# Inject wl_themes + wl_active_theme into frappe.boot on every desk load
+extend_bootinfo = "weblogics_theme.api.theme.extend_bootinfo"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/weblogics_theme/css/weblogics_theme.css"
@@ -83,7 +96,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "weblogics_theme.install.before_install"
-# after_install = "weblogics_theme.install.after_install"
+after_install = "weblogics_theme.install.after_install"
 
 # Uninstallation
 # ------------
