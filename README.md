@@ -1,44 +1,49 @@
 # Weblogics Theme
 
-Custom admin-editable login page for Frappe/ERPNext with split-screen layout — left side login form, right side branding panel.
+A complete theming solution for Frappe/ERPNext — custom desk themes, split-screen login page, and a custom workspace sidebar.
 
 ## Features
 
-- Split-screen login page (50/50 layout)
-- Left panel: Frappe-style login form with input icons, show/hide password, loading state
-- Right panel: Branded gradient or custom background image with heading, subtext & feature highlights
-- **Fully admin-editable** via Single DocType "Login Page Settings" — no code changes needed
+### Desk Themes
+- 8 built-in themes: Default Light, Dark Night, Crimson Red, Ocean Teal, Royal Purple, Sunset Orange, Forest Green, Midnight Blue
+- Per-user theme preference — each user picks their own theme
+- **Auto-installs Default Light** on fresh site install — no manual setup needed
+- Theme picker dialog accessible from the navbar
+- Full CSS variable injection: colors, fonts, button styles, form layouts, list styles
+- Auto dark mode support (follows OS `prefers-color-scheme`)
+- Flash-free early apply via `localStorage` before Frappe boots
+
+### Custom Login Page
+- Split-screen layout (50/50) — left: login form, right: branding panel
+- **Fully admin-editable** via "Login Page Settings" Single DocType — no code changes needed
+- Supports custom logo, headings, background image, and feature highlights
 - Responsive: right panel hides on mobile (< 900px)
-- Works with Frappe v15+ / ERPNext v15+
 
-## Screenshot
+### Custom Workspace Sidebar
+- Fixed-position sidebar with collapsible sub-menus
+- Drag-and-drop reorder in edit mode
+- Active route highlighting
+- Fully themed via CSS variables
 
-```
-┌─────────────────────┬─────────────────────────────┐
-│                     │                             │
-│    ┌──────┐         │    Build, Deploy &          │
-│    │ LOGO │         │    Manage Enterprise        │
-│    └──────┘         │    AI Agents                │
-│                     │                             │
-│  Login to Weblogics │  ○ Workflow automation      │
-│  Enter your creds   │  ○ Agent deployment         │
-│                     │                             │
-│  ✉ jane@example.com│                             │
-│  🔒 ••••••    Show  │                             │
-│       Forgot Pass?  │                             │
-│  [     Login     ]  │                             │
-│       ─ or ─        │                             │
-│  [Login with Email] │                             │
-│                     │                             │
-└─────────────────────┴─────────────────────────────┘
-```
+## Built-in Themes
+
+| Theme | Mode | Accent |
+|---|---|---|
+| Default Light | Light | Indigo `#4f46e5` |
+| Dark Night | Dark | Slate `#818cf8` |
+| Crimson Red | Light | Red `#dc2626` |
+| Ocean Teal | Light | Teal `#0d9488` |
+| Royal Purple | Light | Purple `#7c3aed` |
+| Sunset Orange | Light | Orange `#ea580c` |
+| Forest Green | Light | Green `#16a34a` |
+| Midnight Blue | Dark | Blue `#3b82f6` |
 
 ## Prerequisites
 
 - Python 3.10+
-- Node.js 18+ (recommended: v24)
+- Node.js 18+
 - [Bench CLI](https://github.com/frappe/bench) installed
-- Frappe/ERPNext site running (v15+)
+- Frappe/ERPNext v15+ site running
 
 ## Installation
 
@@ -55,11 +60,9 @@ bench get-app https://github.com/vikassaini-73/weblogics_theme.git
 bench --site YOUR-SITE.local install-app weblogics_theme
 ```
 
-Example:
-
-```bash
-bench --site weblogics.local install-app weblogics_theme
-```
+On install, the app automatically:
+1. Seeds all 8 built-in themes into the database
+2. Sets **Default Light** as the active theme for every enabled user
 
 ### Step 3: Build assets
 
@@ -73,24 +76,28 @@ bench build --app weblogics_theme
 bench restart
 ```
 
-Now visit `http://YOUR-SITE.local/login` — the custom login page should appear.
+Visit `http://YOUR-SITE.local` — the theme is applied immediately.
 
-## Admin Settings (DocType)
+## Switching Themes
 
-Go to **`/app/login-page-settings`** in your Frappe desk to configure:
+Click the **palette icon** in the navbar to open the theme picker. Select any theme — it applies instantly and is saved per user.
+
+To reset to Frappe default, click **"Reset to Frappe Default"** in the picker.
+
+## Admin Settings
+
+### Login Page Settings
+Go to **`/app/login-page-settings`** to configure:
 
 | Field | Description |
 |---|---|
-| Logo | Logo shown above the login form (80×80px recommended) |
+| Logo | Logo above the login form (80×80px recommended) |
 | Heading Text | e.g., "Login to Weblogics" |
 | Subheading Text | e.g., "Enter your credentials to continue" |
-| Right Panel Background Image | Background for right panel (1200×1600px). Leave empty for blue gradient |
-| Right Panel Heading | e.g., "Build, Deploy & Manage Enterprise AI Agents" |
-| Right Panel Subtext | Description text for right panel |
-| Feature Row 1 | Feature highlight line 1 |
-| Feature Row 2 | Feature highlight line 2 |
-
-All fields have sensible defaults — the page works out of the box without any configuration.
+| Right Panel Background Image | Leave empty for default gradient |
+| Right Panel Heading | Main heading on the right panel |
+| Right Panel Subtext | Description text |
+| Feature Row 1 / 2 | Feature highlight lines |
 
 ## File Structure
 
@@ -99,55 +106,64 @@ weblogics_theme/
 ├── README.md
 ├── setup.py
 ├── pyproject.toml
-├── license.txt
-├── requirements.txt
 └── weblogics_theme/
-    ├── __init__.py
-    ├── modules.txt
+    ├── hooks.py               # App hooks — after_install, after_migrate, CSS/JS includes
+    ├── install.py             # Theme seeding + default theme assignment
     ├── patches.txt
-    ├── weblogics_theme/
-    │   ├── __init__.py
-    │   ├── doctype/
-    │   │   └── login_page_settings/
-    │   │       ├── __init__.py
-    │   │       ├── login_page_settings.py
-    │   │       └── login_page_settings.json
-    │   └── www/
-    │       ├── __init__.py
-    │       ├── login.html
-    │       └── login.py
-    └── public/
-        └── css/
-            └── custom_login.css
+    ├── api/
+    │   └── theme.py           # Whitelisted API: switch_theme, get_themes, extend_bootinfo
+    ├── patches/
+    │   ├── add_wl_desk_theme_to_user.py   # Adds wl_desk_theme field to User DocType
+    │   └── rename_theme_fields_v2.py      # Field rename migration
+    ├── public/
+    │   ├── css/
+    │   │   ├── theme_switcher.css         # Theme picker dialog styles
+    │   │   ├── workspace_sidebar.css      # Sidebar layout styles
+    │   │   └── custom_login.css           # Login page styles
+    │   └── js/
+    │       ├── theme_switcher.js          # Core theme engine + picker UI
+    │       └── workspace_sidebar.js       # Custom sidebar widget
+    └── weblogics_theme/
+        └── doctype/
+            ├── weblogics_theme/           # Theme DocType (50+ color/style fields)
+            ├── login_page_settings/       # Single DocType for login branding
+            └── weblogics_theme_menu_icon/ # Child table for sidebar icons
 ```
 
 ## How It Works
 
-- `www/login.html` + `www/login.py` override Frappe's default login route
-- Inherits core `frappe.www.login.get_context` for CSRF/session/security
+**Theme engine flow:**
+1. `after_install` seeds 8 themes into DB and sets Default Light for all users
+2. On every desk load, `extend_bootinfo` injects `wl_themes` and `wl_active_theme` into `frappe.boot`
+3. `theme_switcher.js` reads boot data and injects CSS variables into `:root`
+4. If no theme is set for a user, Default Light is applied automatically as fallback
+5. When user switches theme, `switch_theme` API saves preference to `User.wl_desk_theme`
+
+**Login page override:**
+- `www/login.html` + `www/login.py` override Frappe's default `/login` route
 - Settings fetched from "Login Page Settings" Single DocType with safe fallbacks
-- CSS loaded via `/assets/weblogics_theme/css/custom_login.css`
 
 ## Troubleshooting
 
-**Default login page still showing?**
-Make sure the app is installed on the site:
-
+**Theme not applying after install?**
 ```bash
-bench --site YOUR-SITE.local install-app weblogics_theme
-bench restart
-```
-
-**CSS not loading / old version showing?**
-Rebuild assets and hard-refresh browser (`Ctrl+Shift+R`):
-
-```bash
+bench --site YOUR-SITE.local migrate
 bench build --app weblogics_theme
 bench restart
 ```
 
-**Icons not visible in input fields?**
-Hard-refresh the browser (`Ctrl+Shift+R`) to clear cached CSS.
+**CSS not loading / old version showing?**
+```bash
+bench build --app weblogics_theme
+bench restart
+```
+Then hard-refresh browser (`Ctrl+Shift+R`).
+
+**Default login page still showing?**
+```bash
+bench --site YOUR-SITE.local install-app weblogics_theme
+bench restart
+```
 
 ## License
 
