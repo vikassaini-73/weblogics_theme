@@ -411,6 +411,19 @@
         "DM Sans":    "DM+Sans:wght@400;500;700",
     };
 
+    function _ensure_font_preconnect() {
+        /* One-time preconnect so Google Fonts never blocks first paint. */
+        if (document.getElementById(FONT_TAG_ID + "-pre")) return;
+        [["https://fonts.googleapis.com", null], ["https://fonts.gstatic.com", "anonymous"]].forEach(function (parts) {
+            var pre = document.createElement("link");
+            pre.id = FONT_TAG_ID + "-pre";
+            pre.rel = "preconnect";
+            pre.href = parts[0];
+            if (parts[1]) pre.crossOrigin = parts[1];
+            document.head.appendChild(pre);
+        });
+    }
+
     function _apply_font(family) {
         /* Remove previous font link if it exists */
         var old = document.getElementById(FONT_TAG_ID);
@@ -421,10 +434,15 @@
             return;
         }
 
-        /* Inject Google Fonts link */
+        _ensure_font_preconnect();
+
+        /* Inject Google Fonts link non-render-blocking: print-media swap.
+           Falls back silently offline/ad-block (system-ui stack stays). */
         var link = document.createElement("link");
         link.id   = FONT_TAG_ID;
         link.rel  = "stylesheet";
+        link.media = "print";
+        link.onload = function () { link.media = "all"; };
         link.href = "https://fonts.googleapis.com/css2?family=" +
                     GOOGLE_FONTS[family] + "&display=swap";
         document.head.appendChild(link);

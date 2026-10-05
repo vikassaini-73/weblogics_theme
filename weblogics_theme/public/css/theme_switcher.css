@@ -695,11 +695,10 @@ button.btn-primary {
 }
 
 .widget.shortcut-widget-box {
-    min-height: 84px !important;
-    height: auto !important;
-    padding: 16px 18px !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
+    min-height: 64px;
+    height: 100%;
+    padding: 12px 16px !important;
+    justify-content: center !important;
     text-align: left;
     border-left: 4px solid var(--primary) !important;
 }
@@ -713,12 +712,12 @@ button.btn-primary {
     margin-left: auto;
 }
 
-/* Five compact shortcut tiles fit on wide workspaces; other workspace cards
-   keep Frappe's normal three-column layout. */
+/* Shortcut tiles share the row dynamically and wrap responsively instead
+   of a fixed 20% lock — equal heights come from core height:100%. */
 @media (min-width: 1200px) {
     .ce-block.col-lg-3:has(.shortcut-widget-box) {
-        flex: 0 0 20% !important;
-        max-width: 20% !important;
+        flex: 1 1 180px !important;
+        max-width: 100% !important;
     }
 }
 
@@ -742,6 +741,11 @@ button.btn-primary {
 
 .widget.shortcut-widget-box:hover {
     background-color: var(--wl-btn-primary-bg, var(--primary)) !important;
+}
+/* Keep the count pill readable on the filled hover background. */
+.widget.shortcut-widget-box:hover .indicator-pill {
+    background-color: color-mix(in srgb, var(--wl-btn-primary-text, #ffffff) 22%, var(--wl-btn-primary-bg, var(--primary))) !important;
+    color: var(--wl-btn-primary-text, #ffffff) !important;
 }
 .widget.shortcut-widget-box:hover .widget-title {
     color: var(--wl-btn-primary-text, #ffffff) !important;

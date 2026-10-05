@@ -1,6 +1,7 @@
 # Copyright (c) 2026, Weblogics Theme — License: MIT
 
 import frappe
+from frappe import _
 
 
 # ── helpers ────────────────────────────────────────────────────────────────────
@@ -54,7 +55,12 @@ def _get_user_theme():
 
 
 def _all_themes():
+    """All themes, cached in redis (1h). Cleared on theme save/delete,
+    so desk boot never pays N+1 get_doc on every request."""
     try:
+        cached = frappe.cache.get_value("wl_themes_all")
+        if cached is not None:
+            return cached
         rows = frappe.get_all("Weblogics Theme", fields=["name"], order_by="theme_name asc")
         result = []
         for r in rows:
@@ -62,9 +68,18 @@ def _all_themes():
                 result.append(_doc_to_dict(frappe.get_doc("Weblogics Theme", r.name)))
             except Exception:
                 pass
+        frappe.cache.set_value("wl_themes_all", result, expires_in_sec=3600)
         return result
     except Exception:
         return []
+
+
+def clear_theme_cache():
+    """Called on Weblogics Theme save/delete via doc_events hook."""
+    try:
+        frappe.cache.delete_value("wl_themes_all")
+    except Exception:
+        pass
 
 
 # ── boot hook ───────────────────────────────────────────────────────────────────
@@ -85,6 +100,8 @@ def extend_bootinfo(bootinfo):
 
 @frappe.whitelist()
 def switch_theme(theme_name):
+    if frappe.session.user in ("Guest", None):
+        frappe.throw(_("Not permitted"), frappe.PermissionError)
     if not theme_name:
         _save("")
         return {"name": "", "reverted": True}
@@ -95,14 +112,13 @@ def switch_theme(theme_name):
 
 
 def _save(name):
-    try:
-        frappe.db.set_value(
-            "User", frappe.session.user, "wl_desk_theme",
-            name, update_modified=False,
-        )
-        frappe.cache.hdel("bootinfo", frappe.session.user)
-    except Exception as e:
-        frappe.log_error(f"wl_save_theme: {e}")
+    """Persist theme choice. Errors propagate so the UI never shows a
+    fake success that reverts on reload."""
+    frappe.db.set_value(
+        "User", frappe.session.user, "wl_desk_theme",
+        name, update_modified=False,
+    )
+    frappe.cache.hdel("bootinfo", frappe.session.user)
 
 
 @frappe.whitelist()

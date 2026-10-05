@@ -38,7 +38,15 @@
 	}
 
 	function native_sidebar_key() {
-		return "native_filter_sidebar:" + window.location.pathname;
+		/* Per-route key: /app serves every page, pathname alone would leak
+		   one page's toggle state into all others. */
+		var route = "";
+		try {
+			route = (frappe.router && frappe.router.current_route || []).join("/") || window.location.pathname;
+		} catch (e) {
+			route = window.location.pathname;
+		}
+		return "native_filter_sidebar:" + route;
 	}
 
 	function active_native_sidebar() {
@@ -54,7 +62,7 @@
 		var sidebar = active_native_sidebar();
 		if (!sidebar) return;
 
-		var saved = storage_get(native_sidebar_key(), "closed");
+		var saved = storage_get(native_sidebar_key(), "open");
 		if (saved === "open") {
 			sidebar.style.removeProperty("display");
 		} else {
@@ -379,13 +387,21 @@
 		if (edit_mode_observer) return;
 
 		edit_mode_observer = new MutationObserver(function () {
-			var editing = !!document.querySelector(".layout-main-section.edit-mode");
-			if (editing !== is_edit_mode) {
-				is_edit_mode = editing;
-				toggle_edit_mode(editing);
-			}
+			/* Debounced: class attrs churn on every render, check at most once per 150ms. */
+			if (edit_mode_observer._t) return;
+			edit_mode_observer._t = window.setTimeout(function () {
+				edit_mode_observer._t = null;
+				var editing = !!document.querySelector(".layout-main-section.edit-mode");
+				if (editing !== is_edit_mode) {
+					is_edit_mode = editing;
+					toggle_edit_mode(editing);
+				}
+			}, 150);
 		});
-		edit_mode_observer.observe(body, {
+		/* Scope to the Workspaces page when present instead of the whole
+		   body subtree — far fewer mutations per keystroke/route. */
+		var scope = document.getElementById("page-Workspaces") || body;
+		edit_mode_observer.observe(scope, {
 			subtree: true,
 			attributes: true,
 			attributeFilter: ["class"],
@@ -700,6 +716,10 @@
 	function make_sortable() {
 		destroy_sortable();
 
+		/* SortableJS comes from Frappe core; if missing (offline/CDN fail),
+		   skip drag-drop instead of crashing edit mode. */
+		if (typeof Sortable === "undefined") return;
+
 		var opts = {
 			group: "workspace-sidebar",
 			draggable: "li.is-editable",
@@ -725,7 +745,9 @@
 
 	function destroy_sortable() {
 		sortable_instances.forEach(function (instance) {
-			instance.destroy();
+			try {
+				instance.destroy && instance.destroy();
+			} catch (e) { /* ignore */ }
 		});
 		sortable_instances = [];
 	}

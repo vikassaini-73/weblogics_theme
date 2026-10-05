@@ -158,6 +158,15 @@ after_uninstall = "weblogics_theme.install.after_uninstall"
 # 	}
 # }
 
+# Clear cached theme list whenever a theme is saved or deleted,
+# so desk boot always serves fresh themes without N+1 queries.
+doc_events = {
+    "Weblogics Theme": {
+        "on_update": "weblogics_theme.api.theme.clear_theme_cache",
+        "on_trash": "weblogics_theme.api.theme.clear_theme_cache",
+    }
+}
+
 # Scheduled Tasks
 # ---------------
 
