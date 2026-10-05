@@ -244,12 +244,16 @@ SEED_THEMES = [
 ]
 
 
-def _seed_themes():
-    """Insert or update every theme in SEED_THEMES. Returns True if any change was made."""
+def _seed_themes(overwrite=False):
+    """Insert missing themes from SEED_THEMES. Never touches existing docs
+    unless overwrite=True, so admin/client edits survive every migrate
+    (portable across sites). Returns True if any doc was created."""
     changed = False
     for data in SEED_THEMES:
         name = data["theme_name"]
         if frappe.db.exists("Weblogics Theme", name):
+            if not overwrite:
+                continue
             try:
                 doc = frappe.get_doc("Weblogics Theme", name)
                 for k, v in data.items():
@@ -315,6 +319,23 @@ def after_install():
 
 
 def after_migrate():
-    """Seed / update default themes after every migrate."""
+    """Seed missing default themes after every migrate.
+    Existing (possibly client-edited) themes are never overwritten."""
     _seed_themes()
     frappe.db.commit()
+
+
+def after_uninstall():
+    """Cleanup on app uninstall: remove the wl_desk_theme custom field.
+    Theme docs are left as-is (client data), reinstall will reuse them."""
+    try:
+        name = frappe.db.get_value(
+            "Custom Field",
+            {"dt": "User", "fieldname": "wl_desk_theme"},
+            "name",
+        )
+        if name:
+            frappe.delete_doc("Custom Field", name, ignore_permissions=True)
+            frappe.db.commit()
+    except Exception as e:
+        frappe.log_error(f"wl_after_uninstall: {e}")

@@ -102,7 +102,7 @@ after_install = "weblogics_theme.install.after_install"
 # ------------
 
 # before_uninstall = "weblogics_theme.uninstall.before_uninstall"
-# after_uninstall = "weblogics_theme.uninstall.after_uninstall"
+after_uninstall = "weblogics_theme.install.after_uninstall"
 
 # Integration Setup
 # ------------------

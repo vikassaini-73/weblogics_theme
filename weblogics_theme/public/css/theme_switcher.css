@@ -931,19 +931,23 @@ body,
    23. FORM LAYOUT STYLE — body class applied by JS
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Apple Clean UI — large radius, soft shadow */
+/* Apple Clean UI — large radius, soft shadow.
+   NOTE: no overflow:hidden here — it clips the sticky Connections dashboard
+   (Views/Workflow/Customization tabs). Radius is preserved via isolation. */
 .theme-form-apple .std-form-layout > .form-layout > .form-page {
     border-radius: 14px !important;
     box-shadow: 0 2px 12px rgba(0,0,0,0.07) !important;
     border-color: var(--border-color) !important;
-    overflow: hidden;
+    overflow: visible;
+    isolation: isolate;
 }
 
 /* Keep the white form surface visibly rounded against the page background. */
 .layout-main-section:has(.std-form-layout),
 .std-form-layout > .form-layout > .form-page {
     border-radius: 14px !important;
-    overflow: hidden;
+    overflow: visible;
+    isolation: isolate;
 }
 
 /* Keep long form tab labels usable on narrow desk viewports. */

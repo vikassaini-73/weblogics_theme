@@ -97,7 +97,7 @@ body {
 }
 .form-control {
     width: 100%;
-    padding: 12px 16px 12px 40px;
+    padding: 12px 16px;
     border: 1px solid #d9dde3;
     border-radius: 8px;
     font-size: 14px;
@@ -106,6 +106,10 @@ body {
     outline: none;
     background: #fff;
     transition: border-color 0.15s, box-shadow 0.15s;
+}
+/* icon wale fields me left gap, baki (signup/forgot/OTP) normal */
+.icon-field .form-control {
+    padding-left: 40px;
 }
 .form-control::placeholder {
     color: #b0b7c3;
@@ -202,6 +206,81 @@ body {
     background: #f0f0f0;
 }
 
+/* ===== DEFAULT-ENGINE HOOKS (sections/social/signup/OTP) ===== */
+.hide {
+    display: none !important;
+}
+.page-card-body.invalid .form-control {
+    border-color: #e02424;
+}
+.invalid-login {
+    animation: wl-wiggle 0.5s linear;
+}
+@keyframes wl-wiggle {
+    8%, 41% { transform: translateX(-10px); }
+    25%, 58% { transform: translateX(10px); }
+    75% { transform: translateX(-5px); }
+    92% { transform: translateX(5px); }
+    0%, 100% { transform: translateX(0); }
+}
+.social-logins {
+    margin-top: 4px;
+}
+.social-login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+.login-button-wrapper img {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+.sign-up-message {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #666;
+}
+.sign-up-message a {
+    color: #4f6df5;
+    text-decoration: none;
+    font-weight: 600;
+}
+.forgot-link.back-link {
+    text-align: center;
+    margin: 12px 0 0;
+}
+/* signup + OTP forms reuse the same look */
+.for-signup .form-control {
+    margin-bottom: 14px;
+}
+.for-signup .btn-primary,
+.form-verify .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.for-signup .btn-primary:hover,
+.form-verify .btn-primary:hover {
+    background: #000;
+}
+.form-verify .form-control {
+    margin: 12px 0;
+}
+#qr_info {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
 /* ===== RIGHT: BRANDING PANEL ===== */
 .login-right {
     width: 50%;
@@ -279,8 +358,11 @@ body {
     .login-logo-img { height: 48px; }
     .login-box h2 { font-size: 19px; }
     .form-control {
-        padding: 13px 16px 13px 40px;
+        padding: 13px 16px;
         font-size: 15px;
+    }
+    .icon-field .form-control {
+        padding-left: 40px;
     }
     .btn-login, .btn-email-link {
         padding: 13px;
