@@ -147,11 +147,11 @@ body {
     text-decoration: underline;
 }
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTONS (same as Frappe default: var(--primary) = #171717) ===== */
 .btn-login {
     width: 100%;
     padding: 12px;
-    background: #111;
+    background: var(--primary, #171717);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -193,22 +193,27 @@ body {
     align-items: center;
     justify-content: center;
     padding: 11px 14px;
-    border: 1px solid #e2e2e2;
+    border: none;
     border-radius: 8px;
-    background: #f9f9f9;
-    color: #333;
+    background: var(--gray-100, #f3f3f3);
+    color: var(--text-gray-700, #383838);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
 }
 .btn-email-link:hover {
-    background: #f0f0f0;
+    background: var(--gray-300, #e2e2e2);
 }
 
 /* ===== DEFAULT-ENGINE HOOKS (sections/social/signup/OTP) ===== */
 .hide {
     display: none !important;
+}
+/* JS route karke sahi section dikhata hai; tab tak sab hidden taaki
+   reload par 2 form na chamke */
+.login-box section[class^='for-'] {
+    display: none;
 }
 .page-card-body.invalid .form-control {
     border-color: #e02424;
@@ -260,7 +265,7 @@ body {
 .form-verify .btn-primary {
     width: 100%;
     padding: 12px;
-    background: #111;
+    background: var(--primary, #171717);
     color: #fff;
     border: none;
     border-radius: 8px;
